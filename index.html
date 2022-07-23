@@ -8,10 +8,8 @@
       content="width=
     , initial-scale=1.0"
     />
-    <title>Document</title>
-
+    <title>Data Visualization Mini Project</title>
     <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
-    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
   </head>
@@ -74,6 +72,24 @@
       </div>
 
       <script type="text/javascript">
+        const getRowOfCountry = (allData, countryName, returnArray = true) => {
+          debugger;
+          asObject = allData.find((row) => row.location === countryName);
+          if (!returnArray) return asObject;
+          const order = [
+            "qol-2020-normalised",
+            "health-care-2020-normalised",
+            "col-2020-normalised",
+            "crime-2020-normalised",
+            "safety-2020-normalised",
+            "gdp-2019-normalised",
+            "life-expectancy-2019-normalised",
+          ];
+          return order.map((key) => {
+            return asObject[key];
+          });
+        };
+        window.selectedcountry = "";
         d3.csv("clean_data.csv", function (err, rows) {
           function unpack(rows, key) {
             return rows.map(function (row) {
@@ -81,7 +97,7 @@
             });
           }
 
-          var data = [
+          var dataMap = [
             {
               type: "choropleth",
               locationmode: "country names",
@@ -94,30 +110,61 @@
 
           //    geo = dict(showlakes = True, lakecolor = 'rgb(0,191,255)', showocean=True ,oceancolor= "rgb(0,191,255)", projection_type="orthographic", scope = "world"))
 
-          var layout = {
+          var layoutMap = {
             title: "QoL Accross Asian Countries",
             geo: {
-              scope: "asia",
+              scope: "world",
               showlakes: true,
               lakecolor: "rgb(0, 191, 255)",
               showocean: true,
               oceancolor: "rgb(0, 191, 255)",
               projection: {
-                type: "natural earth",
+                type: "orthographic",
               },
             },
           };
 
-          Plotly.newPlot("graph1", data, layout, { showLink: false }).then(
-            (gd) => {
-              gd.on("plotly_click", (d) => {
-                var pt = (d.points || [])[0];
+          Plotly.newPlot("graph1", dataMap, layoutMap, {
+            showLink: false,
+          }).then((gd) => {
+            gd.on("plotly_click", (d) => {
+              var pt = (d.points || [])[0];
+              window.selectedcountry = pt.location;
 
-                console.log(pt.location);
-                console.log(pt.z);
-              });
-            }
-          );
+              dataRadar = [
+                {
+                  type: "scatterpolar",
+                  r: [5.3, 5.5, 5.0, 5.2, 5.8, 5.6, 5.6],
+                  theta: rows.columns.slice(2),
+                  fill: "toself",
+                  name: "Average",
+                },
+                {
+                  type: "scatterpolar",
+                  r: getRowOfCountry(rows, window.selectedcountry),
+                  theta: rows.columns.slice(2),
+                  fill: "toself",
+                  name: window.selectedcountry,
+                },
+              ];
+
+              layoutRadar = {
+                polar: {
+                  radialaxis: {
+                    visible: true,
+                    range: [0, 10],
+                  },
+                },
+                showlegend: false,
+              };
+
+              Plotly.newPlot("graph2", dataRadar, layoutRadar);
+              // console.log(pt.location);
+              // console.log(pt.z);
+              // console.log(pt);
+            });
+          });
+          console.log(rows);
         });
       </script>
     </center>
