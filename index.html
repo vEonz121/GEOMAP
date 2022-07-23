@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=
+    , initial-scale=1.0"
+    />
+    <title>Document</title>
+
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+  </head>
+
+  <script type="text/javascript">
+    function plot(graph, chart) {
+      var figure = JSON.parse(graph);
+      Plotly.newPlot(chart, figure, {});
+    }
+  </script>
+
+  <body>
+    <center>
+      <!-----------------------------Name & ID-------------------------------->
+      <h1>Data Visualization - Lab 5</h1>
+      <h2><pre>Name: Abdallah Jehad Sami Kishawi    ID: 17007230</pre></h2>
+
+      <!-----------------------------Graph 1-------------------------------->
+      <div>
+        <div
+          class="col-sm-6 p-2 shadow ml-4 mr-4 mb-4 bg-white rounded"
+          style="width: 700px"
+        >
+          <div id="graph1"></div>
+          <div>
+            <p
+              align="right"
+              style="font-family: arial; font-size: 12px; font-style: italic"
+            >
+              [referance]
+            </p>
+          </div>
+          <div>
+            <br />
+            <p align="justify">[empty]</p>
+          </div>
+        </div>
+      </div>
+
+      <!-----------------------------Graph 2-------------------------------->
+      <div>
+        <div
+          class="col-sm-6 p-2 shadow ml-4 mr-4 mb-4 bg-white rounded"
+          style="width: 700px"
+        >
+          <div id="graph2"></div>
+          <div>
+            <p
+              align="right"
+              style="font-family: arial; font-size: 12px; font-style: italic"
+            >
+              [referance]
+            </p>
+          </div>
+          <div>
+            <br />
+            <p align="justify">[empty]</p>
+          </div>
+        </div>
+      </div>
+
+      <script type="text/javascript">
+        d3.csv("clean_data.csv", function (err, rows) {
+          function unpack(rows, key) {
+            return rows.map(function (row) {
+              return row[key];
+            });
+          }
+
+          var data = [
+            {
+              type: "choropleth",
+              locationmode: "country names",
+              locations: unpack(rows, "location"),
+              z: unpack(rows, "qol-2020-normalised"),
+              text: unpack(rows, "location"),
+              autocolorscale: true,
+            },
+          ];
+
+          //    geo = dict(showlakes = True, lakecolor = 'rgb(0,191,255)', showocean=True ,oceancolor= "rgb(0,191,255)", projection_type="orthographic", scope = "world"))
+
+          var layout = {
+            title: "QoL Accross Asian Countries",
+            geo: {
+              scope: "asia",
+              showlakes: true,
+              lakecolor: "rgb(0, 191, 255)",
+              showocean: true,
+              oceancolor: "rgb(0, 191, 255)",
+              projection: {
+                type: "natural earth",
+              },
+            },
+          };
+
+          Plotly.newPlot("graph1", data, layout, { showLink: false }).then(
+            (gd) => {
+              gd.on("plotly_click", (d) => {
+                var pt = (d.points || [])[0];
+
+                console.log(pt.location);
+                console.log(pt.z);
+              });
+            }
+          );
+        });
+      </script>
+    </center>
+  </body>
+</html>
