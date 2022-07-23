@@ -31,9 +31,9 @@
       <div>
         <div
           class="col-sm-6 p-2 shadow ml-4 mr-4 mb-4 bg-white rounded"
-          style="width: 700px"
+          style="width: 1600px"
         >
-          <div id="graph1"></div>
+          <div style="width: auto" id="graph1"></div>
           <div>
             <p
               align="right"
@@ -53,9 +53,9 @@
       <div>
         <div
           class="col-sm-6 p-2 shadow ml-4 mr-4 mb-4 bg-white rounded"
-          style="width: 700px"
+          style="width: 1600px"
         >
-          <div id="graph2"></div>
+          <div style="width: auto" id="graph2"></div>
           <div>
             <p
               align="right"
@@ -90,28 +90,179 @@
           });
         };
         window.selectedcountry = "";
+        window.selectedcol = "qol-2020-normalised";
         d3.csv("clean_data.csv", function (err, rows) {
           function unpack(rows, key) {
             return rows.map(function (row) {
               return row[key];
             });
           }
-
+          // Menue for GEO MAP
+          var button_layer_1_height = 2.12;
+          var button_layer_2_height = 2.0;
           var dataMap = [
             {
+              name: rows.columns[2],
               type: "choropleth",
               locationmode: "country names",
               locations: unpack(rows, "location"),
-              z: unpack(rows, "qol-2020-normalised"),
+              z: unpack(rows, rows.columns[2]),
               text: unpack(rows, "location"),
               autocolorscale: true,
+              visible: true,
+            },
+            {
+              name: rows.columns[3],
+              type: "choropleth",
+              locationmode: "country names",
+              locations: unpack(rows, "location"),
+              z: unpack(rows, rows.columns[3]),
+              text: unpack(rows, "location"),
+              autocolorscale: true,
+              visible: false,
+            },
+            {
+              name: rows.columns[4],
+              type: "choropleth",
+              locationmode: "country names",
+              locations: unpack(rows, "location"),
+              z: unpack(rows, rows.columns[4]),
+              text: unpack(rows, "location"),
+              autocolorscale: true,
+              visible: false,
+            },
+            {
+              name: rows.columns[5],
+              type: "choropleth",
+              locationmode: "country names",
+              locations: unpack(rows, "location"),
+              z: unpack(rows, rows.columns[5]),
+              text: unpack(rows, "location"),
+              autocolorscale: true,
+              visible: false,
+            },
+            {
+              name: rows.columns[6],
+              type: "choropleth",
+              locationmode: "country names",
+              locations: unpack(rows, "location"),
+              z: unpack(rows, rows.columns[6]),
+              text: unpack(rows, "location"),
+              autocolorscale: true,
+              visible: false,
+            },
+            {
+              name: rows.columns[7],
+              type: "choropleth",
+              locationmode: "country names",
+              locations: unpack(rows, "location"),
+              z: unpack(rows, rows.columns[7]),
+              text: unpack(rows, "location"),
+              autocolorscale: true,
+              visible: false,
+            },
+            {
+              name: rows.columns[8],
+              type: "choropleth",
+              locationmode: "country names",
+              locations: unpack(rows, "location"),
+              z: unpack(rows, rows.columns[8]),
+              text: unpack(rows, "location"),
+              autocolorscale: true,
+              visible: false,
+            },
+          ];
+
+          var updatemenus = [
+            {
+              buttons: [
+                {
+                  args: [
+                    {
+                      visible: [true, false, false, false, false, false, false],
+                    },
+                    { title: rows.columns[2] },
+                  ],
+                  label: rows.columns[2],
+                  method: "update",
+                },
+                {
+                  args: [
+                    {
+                      visible: [false, true, false, false, false, false, false],
+                    },
+                    { title: rows.columns[3] },
+                  ],
+                  label: rows.columns[3],
+                  method: "update",
+                },
+                {
+                  args: [
+                    {
+                      visible: [false, false, true, false, false, false, false],
+                    },
+                    { title: rows.columns[4] },
+                  ],
+                  label: rows.columns[4],
+                  method: "update",
+                },
+                {
+                  args: [
+                    {
+                      visible: [false, false, false, true, false, false, false],
+                    },
+                    { title: rows.columns[5] },
+                  ],
+                  label: rows.columns[5],
+                  method: "update",
+                },
+                {
+                  args: [
+                    {
+                      visible: [false, false, false, false, true, false, false],
+                    },
+                    { title: rows.columns[6] },
+                  ],
+                  label: rows.columns[6],
+                  method: "update",
+                },
+                {
+                  args: [
+                    {
+                      visible: [false, false, false, false, false, true, false],
+                    },
+                    { title: rows.columns[7] },
+                  ],
+                  label: rows.columns[7],
+                  method: "update",
+                },
+                {
+                  args: [
+                    {
+                      visible: [false, false, false, false, false, false, true],
+                    },
+                    { title: rows.columns[8] },
+                  ],
+                  label: rows.columns[8],
+                  method: "update",
+                },
+              ],
+              direction: "left",
+              pad: { r: 10, t: 10 },
+              showactive: true,
+              type: "buttons",
+              x: 0.1,
+              xanchor: "left",
+              y: button_layer_2_height,
+              yanchor: "top",
             },
           ];
 
           //    geo = dict(showlakes = True, lakecolor = 'rgb(0,191,255)', showocean=True ,oceancolor= "rgb(0,191,255)", projection_type="orthographic", scope = "world"))
 
           var layoutMap = {
-            title: "QoL Accross Asian Countries",
+            // title: "QoL Accross Asian Countries",
+            updatemenus: updatemenus,
             geo: {
               scope: "world",
               showlakes: true,
@@ -119,11 +270,11 @@
               showocean: true,
               oceancolor: "rgb(0, 191, 255)",
               projection: {
-                type: "orthographic",
+                type: "robinson",
               },
             },
           };
-
+          console.log(layoutMap);
           Plotly.newPlot("graph1", dataMap, layoutMap, {
             showLink: false,
           }).then((gd) => {
@@ -131,23 +282,23 @@
               var pt = (d.points || [])[0];
               window.selectedcountry = pt.location;
 
-              dataRadar = [
+              let countryRow = getRowOfCountry(rows, window.selectedcountry);
+              let dataRadar = [
                 {
                   type: "scatterpolar",
-                  r: [5.3, 5.5, 5.0, 5.2, 5.8, 5.6, 5.6],
-                  theta: rows.columns.slice(2),
+                  r: [5.3, 5.5, 5.0, 5.2, 5.8, 5.6, 5.6, 5.3], // hardcoded average values
+                  theta: [...rows.columns.slice(2), rows.columns[2]],
                   fill: "toself",
                   name: "Average",
                 },
                 {
                   type: "scatterpolar",
-                  r: getRowOfCountry(rows, window.selectedcountry),
-                  theta: rows.columns.slice(2),
+                  r: [...countryRow, countryRow[0]],
+                  theta: [...rows.columns.slice(2), rows.columns[2]],
                   fill: "toself",
                   name: window.selectedcountry,
                 },
               ];
-
               layoutRadar = {
                 polar: {
                   radialaxis: {
@@ -164,7 +315,6 @@
               // console.log(pt);
             });
           });
-          console.log(rows);
         });
       </script>
     </center>
