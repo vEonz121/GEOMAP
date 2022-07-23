@@ -24,7 +24,7 @@
   <body>
     <center>
       <!-----------------------------Name & ID-------------------------------->
-      <h1>Data Visualization - Group Project</h1>
+      <h1>Data Visualization - Lab 5</h1>
       <h2><pre>Name: Abdallah Jehad Sami Kishawi    ID: 17007230</pre></h2>
 
       <!-----------------------------Graph 1-------------------------------->
@@ -72,19 +72,8 @@
       </div>
 
       <script type="text/javascript">
-        // ----- HELPER FUNCTIONS ----- //
-        
-        // parse numerical functions, given array of nonNumerics columns
-        const parseNums = (allData, nonNumerics) => {
-          allData.forEach((d) => {
-            Object.keys(d).filter((name) => { return !nonNumerics.includes(name)}).forEach((key) => {
-                d[key] = +d[key];
-            })
-          });
-        }
-
-        // returns row in allData identified by countryName. can return as object or as array
         const getRowOfCountry = (allData, countryName, returnArray = true) => {
+          debugger;
           asObject = allData.find((row) => row.location === countryName);
           if (!returnArray) return asObject;
           const order = [
@@ -100,136 +89,82 @@
             return asObject[key];
           });
         };
-
-        // gets column in allData identified by key. returns as array
-        const unpack = (allData, key) => {
-          return allData.map(function (row) {
-            return row[key];
-          });
-        }
-
-
-        // ----- GRAPHING FUNCTIONS ----- //
-        
-        // builds choropleth map
-        const buildChoropleth = (rows) => {
-            let data = [
-              {
-                type: "choropleth",
-                locationmode: "country names",
-                locations: unpack(rows, "location"),
-                z: unpack(rows, "qol-2020-normalised"),
-                text: unpack(rows, "location"),
-                autocolorscale: true,
-              }
-            ];
-
-            let layout = {
-              title: "QoL Accross Asian Countries",
-              geo: {
-                scope: "asia",
-                showlakes: true,
-                lakecolor: "rgb(0, 191, 255)",
-                showocean: true,
-                oceancolor: "rgb(0, 191, 255)",
-                projection: {
-                  type: "projection",
-                },
-              },
-            };
-
-            Plotly.newPlot("graph1", data, layout, {
-            showLink: false,
-            }).then(gd => {
-              gd.on("plotly_click", d => {
-                selectedCountry = (d.points ?? [])[0]?.location;
-
-                buildHeatMap(rows, selectedCountry);
-                buildRadarPlot(rows, selectedCountry);
-                buildHoriBar(rows, selectedCountry);
-              })
-            })
-          }  // buildChoropleth()
-
-        // builds heat map of selected counry
-        const buildHeatMap = (rows, selectedCountry) => {
-          if (!selectedCountry) buildInitHeatMap(rows);
-        
-          // draw heat map
-        }
-
-        // builds radar plot of selected country
-        const buildRadarPlot = (rows, selectedCountry) => {
-          if (!selectedCountry) buildInitRadarPlot(rows);
-
-          let data = [
-              {
-                type: "scatterpolar",
-                r: [5.3, 5.5, 5.0, 5.2, 5.8, 5.6, 5.6],
-                theta: rows.columns.slice(2),
-                fill: "toself",
-                name: "Average"
-              },
-              {
-                type: "scatterpolar",
-                r: getRowOfCountry(rows, selectedCountry),
-                theta: rows.columns.slice(2),
-                fill: "toself",
-                name: selectedCountry
-              },
-            ];
-
-            let layout = {
-              polar: {
-                radialaxis: {
-                  visible: true,
-                  range: [0, 10],
-                },
-              },
-              showlegend: false,
-            };
-
-            Plotly.newPlot("graph2", data, layout);
-        }
-
-        // builds horizontal bar chart of selected country
-        const buildHoriBar = (rows, selectedCountry) => {
-          if (!selectedCountry) buildInitHoriBar(rows);
-
-          // draw radar plot
-        }
-
-        // builds initial heat map before selectedcountry is defined
-        const buildInitHeatMap = (rows) => {
-          // do something to draw initial heat map
-          return
-        }
-        
-        // builds initial radar plot before selectedcountry is defined
-        const buildInitRadarPlot = (rows) => {
-          // do something to draw initial radar plot
-          return
-        }
-        
-        // builds initial horizontal bar chart before selectedcountry is defined
-        const buildInitHoriBar = (rows) => {
-          // do something to draw initial hori bar
-          return
-        }
-        
-
-        // ----- MAIN ----- //
-        
-        // get data
+        window.selectedcountry = "";
         d3.csv("clean_data.csv", function (err, rows) {
-          // parse numericals
-          parseNums(rows, ['location', 'iso'])
+          function unpack(rows, key) {
+            return rows.map(function (row) {
+              return row[key];
+            });
+          }
 
-          // build graphs
-          buildChoropleth(rows);
-          buildInitHeatMap(rows);
-          buildInitRadarPlot(rows);
-          buildInitHoriBar(rows);
+          var dataMap = [
+            {
+              type: "choropleth",
+              locationmode: "country names",
+              locations: unpack(rows, "location"),
+              z: unpack(rows, "qol-2020-normalised"),
+              text: unpack(rows, "location"),
+              autocolorscale: true,
+            },
+          ];
+
+          //    geo = dict(showlakes = True, lakecolor = 'rgb(0,191,255)', showocean=True ,oceancolor= "rgb(0,191,255)", projection_type="orthographic", scope = "world"))
+
+          var layoutMap = {
+            title: "QoL Accross Asian Countries",
+            geo: {
+              scope: "world",
+              showlakes: true,
+              lakecolor: "rgb(0, 191, 255)",
+              showocean: true,
+              oceancolor: "rgb(0, 191, 255)",
+              projection: {
+                type: "orthographic",
+              },
+            },
+          };
+
+          Plotly.newPlot("graph1", dataMap, layoutMap, {
+            showLink: false,
+          }).then((gd) => {
+            gd.on("plotly_click", (d) => {
+              var pt = (d.points || [])[0];
+              window.selectedcountry = pt.location;
+
+              dataRadar = [
+                {
+                  type: "scatterpolar",
+                  r: [5.3, 5.5, 5.0, 5.2, 5.8, 5.6, 5.6],
+                  theta: rows.columns.slice(2),
+                  fill: "toself",
+                  name: "Average",
+                },
+                {
+                  type: "scatterpolar",
+                  r: getRowOfCountry(rows, window.selectedcountry),
+                  theta: rows.columns.slice(2),
+                  fill: "toself",
+                  name: window.selectedcountry,
+                },
+              ];
+
+              layoutRadar = {
+                polar: {
+                  radialaxis: {
+                    visible: true,
+                    range: [0, 10],
+                  },
+                },
+                showlegend: false,
+              };
+
+              Plotly.newPlot("graph2", dataRadar, layoutRadar);
+              // console.log(pt.location);
+              // console.log(pt.z);
+              // console.log(pt);
+            });
+          });
+          console.log(rows);
         });
       </script>
     </center>
