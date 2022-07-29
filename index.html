@@ -6,8 +6,8 @@
   <meta
     name="viewport"
     content="
-    width=1536
-    height=864
+    width=1920
+    height=1080
     initial-scale=1.0"
   />
   <title>Data Visualization Mini Project</title>
@@ -18,51 +18,76 @@
 
 
 <style>
-  body {
-    overflow: hidden; /* Hide scrollbars */
+  :root {
+    --width: 1600px;
+    --height: calc(var(--width) / 16 * 9)
   }
-  #title-box {
-    height: 5vh;
-    background-color: #56D2E6;
-    padding-top: 1px;
-    padding-left: 9px;
-  }
-  #title-label {
-    font-size: 24px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+  #graph-box {
+    width: var(--width);
+    height: var(--height);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border-width: 7px;
+    border-radius: 8px;
+    overflow: hidden;
   }
   .grid-container {
     display: grid;
-    grid-template-columns: 23vw auto 5vw 27vw;
-    grid-template-rows: 17vh 40vh 40vh;
+    grid-template-columns: 23% auto 5% 25%;
+    grid-template-rows: 5% 15% 40% 40%;
   }
   .item {
     background-color: white;
   }
+  #title-box {
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    background-color: #56D2E6;
+    padding-top: 3px;
+    padding-left: 9px;
+  }
+  #title-label {
+    width: 50%;
+    font-size: 30px;
+    font-family: 'Trebuchet MS', sans-serif;
+  }
+  #reference-label {
+    padding-top: 1px;
+    padding-right: 9px;
+    font-size: 12px;
+    text-align: right;
+    float: right;
+    vertical-align: bottom;
+  }
+  a {
+    text-decoration: underline;
+  }
   #choropleth {
-    grid-row-start: 1;
-    grid-row-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 5;
     grid-column-start: 1;
     grid-column-end: 4;
   }
   #radar {
     grid-column: 1;
-    grid-row: 3;
+    grid-row: 4;
   }
   #horibar {
     grid-column-start: 3;
     grid-column-end: 5;
-    grid-row: 3;
+    grid-row: 4;
   }
   #ranking {
     grid-column-start: 3;
     grid-column-end: 5;
-    grid-row: 2;
+    grid-row: 3;
   }
   #insight {
     grid-column-start: 3;
     grid-column-end: 5;
-    grid-row: 1;
+    grid-row: 2;
     z-index: 2;
   }
   #insight-box {
@@ -70,17 +95,20 @@
     border-width: 3px;
     margin: 10px;
     padding: 8px;
-    padding-top: 2px;
-    width: 95%;
-    height: 96%;
+    width: calc(100% - 3px - 10px - 8px);
+    height: calc(100% - 3px - 10px - 8px);
     z-index: 3;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
   #insight-label {
-    font-family: "Helvetica Neue",
+    font-family: "Helvetica Neue";
+    
+    text-justify: inter-word;
   }
   #reset-btn-box {
     grid-column: 3;
-    grid-row: 1;
+    grid-row: 2;
     display: block;
     Z-index: 5;
     padding-top: 13px;
@@ -102,256 +130,378 @@
 </style>
 
 <body>
+  <div id="graph-box" class="grid-container">
     <div id="title-box">
-      <p id="title-label">
+      <span id="title-label">
         Wellness Indices of Asian Countries, and the Happiest Countries.
-      </p>
-    </div>
-    <div id="parent" class="grid-container">
-      <div id="choropleth" class="item"></div>
-      <div id="radar" class="item"></div>
-      <div id="insight" class="item">
-        <div id="insight-box">
-          <p id="insight-label">Insight Lorem ipsum dolor sit amet, consectetur adipiscing elit. Iaculis lectus mestibulum maximus mauris orci, eu imperdiet risus ornare vel. Nullam elementum eros quis augue placerat, eu imperdiet tortor lacinia. Nunc dapibus hendrerit erat, non bibendum arcu pharetra male</p>
-        </div>
+      </span>
+      <span id="reference-label">
+        Data sourced from 
+        <a class="ref-link" href="https://www.kaggle.com/datasets/dumbgeek/countries-dataset-2020?select=Quality+of+life+index+by+countries+2020.csv">here</a>
+        and 
+        <a class="ref-link" href="https://www.kaggle.com/datasets/unsdsn/world-happiness?select=2019.csv">here</a>.<br>
+        (by Varun Yadav and Sustainable Development Solution Network)
+      </span>
+    </div>  <!-- title-box -->  
+    <div id="choropleth" class="item"></div>
+    <div id="radar" class="item"></div>
+    <div id="insight" class="item">
+      <div id="insight-box">
+        <p id="insight-label">
+          Insight: <br>
+          <br> 
+          Based on the Overall Happiness Ranking, the top three countries are Japan, Singapore and Qatar. <br>
+          <br>
+          The bottom three countries on the other hand are Bangladesh, Pakistan and Kazakhstan. <br>
+          <br>
+          However, based on individual index rankings, Taiwanese residents enjoy the best healthcare despite ranking #5 overall. This does not reflect its ranking in Life Expectancy however, where Singaporeans are expected to live longest. Across these two indexes, Japan is a great option (#3 in both).<br>
+          <br>
+          From the perspective of economic welfare, Qatar has the highest GDP with #6 in cost of living, making it an attractive investment country.<br>
+          <br>
+          Qatar is also a good option for living welfare, ranking very high in both Quality of Life and Safety.
+          </p>
       </div>
-      <div id="ranking" class="item"></div>
-      <div id="horibar" class="item"></div>
-
-      <div id="reset-btn-box"><button type="button" id="reset-btn" disabled style="display: none">Deselect Country</button> </div>
     </div>
+    <div id="ranking" class="item"></div>
+    <div id="horibar" class="item"></div>
+
+    <div id="reset-btn-box"><button type="button" id="reset-btn" disabled style="display: none">Deselect Country</button> </div>
+  </div>  <!-- graph-box -->
+
+  <script type="text/javascript">
+    // ----- HELPER FUNCTIONS ----- //
+    
+    // in-place parses numerical columns, given array of nonNumerics keys to ignore
+    const parseNums = (allData) => {
+      allData.forEach((d) => {
+        Object.keys(d).forEach((key) => {
+            d[key] = +d[key] || d[key];  // if cant parse, keep as normal
+        })
+      });
+    }
+
+    // returns row in allData identified by countryName. can return as object or as array
+    const getRowOfCountry = (allData, countryName, returnArray = true) => {
+      const order = [
+        "Quality of Life",
+        "Healthcare",
+        "Cost of Living",
+        "Safety",
+        "GDP",
+        "Life Expectancy",
+      ];
+      asObject = allData.find((row) => row.location === countryName);
+      if (!returnArray) {return asObject}
+
+      return order.map((key) => {
+        return asObject[key];
+      });
+    };
+
+    // gets column in allData identified by key. returns as array
+    const unpack = (allData, key) => {
+      return allData.map(function (row) {
+        return row[key];
+      });
+    }
 
 
-    <script type="text/javascript">
-
-      // ----- HELPER FUNCTIONS ----- //
+    // ----- GRAPHING FUNCTIONS ----- //
+    
+    // builds choropleth map. returns choropleth plot object
+    const buildChoropleth = (rows) => {
+      // Menue for GEO MAP
+      var button_layer_1_height = 2.12;
+      var button_layer_2_height = 2.0;
       
-      // in-place parses numerical columns, given array of nonNumerics keys to ignore
-      const parseNums = (allData) => {
-        allData.forEach((d) => {
-          Object.keys(d).forEach((key) => {
-              d[key] = +d[key] || d[key];  // if cant parse, keep as normal
-          })
-        });
+      // build graph data for each column
+      const data = [];
+      for (var i = 2; i < 8; i++) {
+        let d = {
+          name: rows.columns[i],
+          type: "choropleth",
+          colorscale: [
+          [0.00, '#c2f7c6'], [0.05, '#baf1be'],
+          [0.10, '#b2ecb7'], [0.15, '#abe6af'],
+          [0.20, '#a3e1a7'], [0.25, '#9bdba0'], 
+          [0.30, '#93d698'], [0.35, '#8bd091'], 
+          [0.40, '#84cb89'], [0.45, '#7cc582'], 
+          [0.50, '#74c07a'], [0.55, '#6cba73'], 
+          [0.60, '#64b56c'], [0.65, '#5cb064'], 
+          [0.70, '#54aa5d'], [0.75, '#4ba556'], 
+          [0.80, '#439f4e'], [0.85, '#3a9a47'], 
+          [0.90, '#309540'], [0.95, '#248f38'], 
+          [1.00, '#168a31']
+          ],
+          locationmode: "country names",
+          locations: unpack(rows, "location"),
+          z: unpack(rows, rows.columns[i]),
+          text: unpack(rows, "location"),
+          visible: i == 2,
+          showscale: false,
+          hovertemplate: "%{location}<br>%{z:.2f}"
+        }
+        data.push(d);
       }
 
-      // returns row in allData identified by countryName. can return as object or as array
-      const getRowOfCountry = (allData, countryName, returnArray = true) => {
-        const order = [
-          "Quality of Life",
-          "Healthcare",
-          "Cost of Living",
-          "Safety",
-          "GDP",
-          "Life Expectancy",
-        ];
-        asObject = allData.find((row) => row.location === countryName);
-        if (!returnArray) {return asObject}
+      const buttons = []
+      for (var i = 2; i < 8; i++) {
+        let b = {
+          args: [
+            {
+              visible: Array.from({length: 7}, (value, index) => index == i - 2)
+            },
+            { title: rows.columns[i] },
+          ],
+          label: rows.columns[i],
+          method: "update"
+        }
+        buttons.push(b)
+      }
 
-        return order.map((key) => {
-          return asObject[key];
-        });
+      const updatemenu = [
+        {
+          buttons: buttons,
+          direction: "left",
+          pad: { r: 10, t: 10 },
+          showactive: true,
+          type: "buttons",
+          x: 0.1,
+          xanchor: "left",
+          y: button_layer_2_height,
+          yanchor: "top",
+        },
+      ];
+
+      const docWidth = +getComputedStyle(document.documentElement).getPropertyValue('--width').slice(0,-2);
+      let layout = {
+        title: rows.columns[2],
+        updatemenus: updatemenu,
+        showlegend: false,
+        geo: {
+          scope: "asia",
+          showocean: true,
+          oceancolor: "#00BFFF",
+        },
+        // defining width and height here 
+        // actually defined zoom, because the div size gets forced to be smaller later on
+        width: docWidth * .77,  
+        height: (docWidth / 16 * 9) * 1.05,
+        autosize: false,
+        margin: {
+          t: 0,
+          l: 0,
+          r: 0,
+          b: 0,
+          autoexpand: false,
+        },
+        
+        dragmode: false,
       };
 
-      // gets column in allData identified by key. returns as array
-      const unpack = (allData, key) => {
-        return allData.map(function (row) {
-          return row[key];
-        });
+      return Plotly.newPlot("choropleth", data, layout, {
+        showLink: false,
+        displayModeBar: false
+      })
+    }        
+
+
+    const buildRankingChart = (rows, score) => {
+      // draw bar chart
+      var data = [{
+        type: 'bar',
+        y: unpack(score, 'score'),
+        x: unpack(rows, 'location'),
+        transforms: [{
+          type: 'sort',
+          target: 'y',
+          order: 'descending',
+        }],
+        marker: {
+          color: '#56D2E6'
+        },
+      }];
+
+      var layout = {
+        title: "Overall Happiness Ranking",
+        yaxis: {
+          showticklabels: false,
+          hoverformat: '.1f'
+        },
+        xaxis: {
+          showticklabels: false
+        },
+        annotations: [{
+          x: 20,
+          y: 60,
+          text: '#1 Japan<br>#2 Singapore<br>#3 Qatar',
+          bordercolor: "#112211",
+          align: 'left',
+          showarrow: false
+        }]
       }
 
-      // returns displayable column label given column name
-      const getColumnLabel = (columnName) => {
-        return {
-          "qol-2020-normalised": "Quality of Life",
-          "health-care-2020-normalised": "Health Care",
-          "col-2020-normalised": "Cost of Living",
-          "safety-2020-normalised": "Safety",
-          "gdp-2019-normalised": "GDP",
-          "life-expectancy-2019-normalised": "Life Expectancy" 
-        }[columnName];
+      Plotly.newPlot('ranking', data, layout, {displayModeBar: false});
+    }
+
+    // builds barchart of selected counry
+    const rebuildRankingChart = (rows, score, selectedCountry) => {
+      if (!selectedCountry) {
+        console.log('no country selected ranking chart')
+        buildRankingChart(rows, score);
+        return
       }
-
-
-      // ----- GRAPHING FUNCTIONS ----- //
       
-      // builds choropleth map. returns choropleth plot object
-      const buildChoropleth = (rows) => {
-        // Menue for GEO MAP
-        var button_layer_1_height = 2.12;
-        var button_layer_2_height = 2.0;
-        
-        // build graph data for each column
-        const data = [];
-        for (var i = 2; i < 8; i++) {
-          let d = {
-            name: rows.columns[i],
-            type: "choropleth",
-            colorscale: [
-            [0.00, '#c2f7c6'], [0.05, '#baf1be'],
-            [0.10, '#b2ecb7'], [0.15, '#abe6af'],
-            [0.20, '#a3e1a7'], [0.25, '#9bdba0'], 
-            [0.30, '#93d698'], [0.35, '#8bd091'], 
-            [0.40, '#84cb89'], [0.45, '#7cc582'], 
-            [0.50, '#74c07a'], [0.55, '#6cba73'], 
-            [0.60, '#64b56c'], [0.65, '#5cb064'], 
-            [0.70, '#54aa5d'], [0.75, '#4ba556'], 
-            [0.80, '#439f4e'], [0.85, '#3a9a47'], 
-            [0.90, '#309540'], [0.95, '#248f38'], 
-            [1.00, '#168a31']
-            ],
-            locationmode: "country names",
-            locations: unpack(rows, "location"),
-            z: unpack(rows, rows.columns[i]),
-            text: unpack(rows, "location"),
-            visible: i == 2,
-            showscale: false,
-            hovertemplate: "%{location}<br>%{z:.2f}"
-          }
-          data.push(d);
-        }
+      var data = [{
+        type: 'bar',
+        y: unpack(score, 'score'),
+        x: unpack(rows, 'location'),
+        transforms: [{
+          type: 'sort',
+          target: 'y',
+          order: 'descending',
+        }],
+        marker: {},
+      }];
 
-        const buttons = []
-        for (var i = 2; i < 8; i++) {
-          let b = {
-            args: [
-              {
-                visible: Array.from({length: 7}, (value, index) => index == i - 2)
-              },
-              { title: rows.columns[i] },
-            ],
-            label: rows.columns[i],
-            method: "update"
-          }
-          buttons.push(b)
-        }
-
-        const updatemenu = [
-          {
-            buttons: buttons,
-            direction: "left",
-            pad: { r: 10, t: 10 },
-            showactive: true,
-            type: "buttons",
-            x: 0.1,
-            xanchor: "left",
-            y: button_layer_2_height,
-            yanchor: "top",
-          },
-        ];
-
-        let layout = {
-          title: rows.columns[2],
-          updatemenus: updatemenu,
-          showlegend: false,
-          geo: {
-            scope: "asia",
-            showocean: true,
-            oceancolor: "#00BFFF",
-          },
-          margin: {
-            t: 70,
-            l: 0,
-            r: 0,
-            b: 0,
-            autoexpand: false
-          },
-          dragmode: false,
-        };
-
-        return Plotly.newPlot("choropleth", data, layout, {
-          showLink: false,
-          displayModeBar: false
-        })
-      }        
-
-
-
-      const buildRankingChart = (rows, score) => {
-        // draw bar chart
-        var data = [{
-          type: 'bar',
-          y: unpack(score, 'score'),
-          x: unpack(rows, 'location'),
-          transforms: [{
-            type: 'sort',
-            target: 'y',
-            order: 'descending',
-          }],
-          marker: {
-            color: '#56D2E6'
-          },
-        }];
-
-        var layout = {
-          title: "Overall Happiness Ranking",
-          yaxis: {
-            showticklabels: false,
-            hoverformat: '.1f'
-          },
-          xaxis: {
-            showticklabels: false
-          },
-          annotations: [{
-            x: 20,
-            y: 60,
-            text: '#1 Japan<br>#2 Singapore<br>#3 Qatar',
-            bordercolor: "#112211",
-            align: 'left',
-            showarrow: false
-          }]
-        }
-
-        Plotly.newPlot('ranking', data, layout, {displayModeBar: false});
+      var layout = {
+        title: "Overall Happiness Ranking",
+        yaxis: {
+          showticklabels: false,
+          hoverformat: '.1f'
+        },
+        xaxis: {
+          showticklabels: false
+        },
+        annotations: [{
+          x: 20,
+          y: 60,
+          text: '#1 Japan<br>#2 Singapore<br>#3 Qatar',
+          bordercolor: "#112211",
+          align: 'left',
+          showarrow: false
+        }]
       }
-  
-      // builds barchart of selected counry
-      const rebuildRankingChart = (rows, score, selectedCountry) => {
-        if (!selectedCountry) {
-          console.log('no country selected ranking chart')
-          buildRankingChart(rows, score);
-          return
-        }
-        
-        var data = [{
-          type: 'bar',
-          y: unpack(score, 'score'),
-          x: unpack(rows, 'location'),
-          transforms: [{
-            type: 'sort',
-            target: 'y',
-            order: 'descending',
-          }],
-          marker: {},
-        }];
 
-        var layout = {
-          title: "Overall Happiness Ranking",
-          yaxis: {
-            showticklabels: false,
-            hoverformat: '.1f'
-          },
-          xaxis: {
-            showticklabels: false
-          },
-          annotations: [{
-            x: 20,
-            y: 60,
-            text: '#1 Japan<br>#2 Singapore<br>#3 Qatar',
-            bordercolor: "#112211",
-            align: 'left',
-            showarrow: false
-          }]
-        }
+      const value = score.find(row => row.location === selectedCountry)['score'];
+      const ranking = score.slice().sort((a, b) => (a.score < b.score) ? 1 : -1).map(c => c.location).indexOf(selectedCountry) + 1
 
-        const value = score.find(row => row.location === selectedCountry)['score'];
-        const ranking = score.slice().sort((a, b) => (a.score < b.score) ? 1 : -1).map(c => c.location).indexOf(selectedCountry) + 1
+      // find country to highlight
+      data[0].marker.color = data[0].x.map(c => c === selectedCountry ? '#8D5A97' : '#56D2E6')
+      layout.annotations.push({
+        x: selectedCountry,
+        y: value,
+        text: selectedCountry + ` (#${ranking})`,
+        align: 'left',
+        bgcolor: "#FEFEFE",
+        bordercolor: "#112211",
+        showarrow: true,
+        ax: 15,
+        ay: -40,
+      })
 
-        // find country to highlight
-        data[0].marker.color = data[0].x.map(c => c === selectedCountry ? '#8D5A97' : '#56D2E6')
-        layout.annotations.push({
+
+      Plotly.newPlot('ranking', data, layout, {displayModeBar: false})
+    }
+
+
+
+    // builds initial horizontal bar chart before selectedcountry is defined
+    const buildSelColumn = (rows, selectedColumn) => {
+      var data = [{
+        type: 'bar',
+        x: unpack(rows, 'location'),
+        y: unpack(rows, selectedColumn),
+        // orientation: 'h',
+        transforms: [{
+          type: 'sort',
+          target: 'y',
+          order: 'descending',
+        }],
+        marker: {
+          color: '#56D2E6'
+        },
+      }];
+
+      const topRankers = rows.slice().sort((a, b) => (a[selectedColumn] < b[selectedColumn]) ? 1 : -1).map(c => c.location).slice(0, 3)
+
+      var layout = {
+        title: selectedColumn,
+        yaxis: {
+          showticklabels: false,
+          hoverformat: '.1f'
+        },
+        xaxis: {
+          showticklabels: false
+        },
+        annotations: [{
+          x: 20,
+          y: 10,
+          text: `#1 ${topRankers[0]}<br>#2 ${topRankers[1]}<br>#3 ${topRankers[2]}`,
+          bordercolor: "#112211",
+          align: 'left',
+          showarrow: false
+        }]
+      }
+      
+      Plotly.newPlot('horibar', data, layout, {displayModeBar: false});
+    }
+
+    // builds horizontal bar chart of selected country
+    const rebuildSelColumn = (rows, selectedCountry = undefined, selectedColumn) => {
+      if (!selectedCountry) {
+        console.log('no country selected')
+        buildSelColumn(rows, selectedColumn);
+        return
+      }
+
+      var data = [{
+        type: 'bar',
+        x: unpack(rows, 'location'),
+        y: unpack(rows, selectedColumn),
+        // orientation: 'h',
+        transforms: [{
+          type: 'sort',
+          target: 'y',
+          order: 'descending',
+        }],
+        marker: {},
+      }];
+
+      // const value = score.find(row => row.location === selectedCountry)['score'];
+      const topRankers = rows.slice().sort((a, b) => (a[selectedColumn] < b[selectedColumn]) ? 1 : -1).map(c => c.location).slice(0, 3)
+
+      var layout = {
+        title: selectedColumn,
+        yaxis: {
+          showticklabels: false,
+          hoverformat: '.1f'
+        },
+        xaxis: {
+          showticklabels: false
+        },
+        annotations: [{
+          x: 20,
+          y: 10,
+          text: `#1 ${topRankers[0]}<br>#2 ${topRankers[1]}<br>#3 ${topRankers[2]}`,
+          bordercolor: "#112211",
+          align: 'left',
+          showarrow: false
+        }]
+      }
+
+      // find country to highlight
+      data[0].marker.color = data[0].x.map(c => c === selectedCountry ? '#8D5A97' : '#56D2E6')
+
+
+      // const value = score.find(row => row.location === selectedCountry)['score'];
+      const ranking = rows.slice().sort((a, b) => (a[selectedColumn] < b[selectedColumn]) ? 1 : -1).map(c => c.location).indexOf(selectedCountry) + 1
+
+      // add annotation
+      layout.annotations.push(
+        {
           x: selectedCountry,
-          y: value,
+          y: getRowOfCountry(rows, selectedCountry, false)[selectedColumn],
           text: selectedCountry + ` (#${ranking})`,
           align: 'left',
           bgcolor: "#FEFEFE",
@@ -359,144 +509,82 @@
           showarrow: true,
           ax: 15,
           ay: -40,
-        })
+        }
+      )
 
+      Plotly.newPlot('horibar', data, layout, {displayModeBar: false});
+    }
 
-        Plotly.newPlot('ranking', data, layout, {displayModeBar: false})
-      }
-
-
-
-      // builds initial horizontal bar chart before selectedcountry is defined
-      const buildSelColumn = (rows, selectedColumn) => {
-        var data = [{
-          type: 'bar',
-          x: unpack(rows, 'location'),
-          y: unpack(rows, selectedColumn),
-          // orientation: 'h',
-          transforms: [{
-            type: 'sort',
-            target: 'y',
-            order: 'descending',
-          }],
+  
+    // builds initial radar plot before selectedcountry is defined
+    const buildRadarPlot = (rows) => {
+      // do something to draw initial radar plot
+      let data = [
+        {
+          type: "scatterpolar",
+          r: [5.3, 5.5, 5.0, 5.2, 5.8, 5.6, 5.6, 5.3],  // hardcoded average values
+          theta: [...rows.columns.slice(2), rows.columns[2]],
+          fill: "toself",
+          name: "Average",
+          hovertemplate: '%{theta}: %{r:.1f}',
           marker: {
             color: '#56D2E6'
-          },
-        }];
-
-        const topRankers = rows.slice().sort((a, b) => (a[selectedColumn] < b[selectedColumn]) ? 1 : -1).map(c => c.location).slice(0, 3)
-
-        var layout = {
-          title: selectedColumn,
-          yaxis: {
-            showticklabels: false,
-            hoverformat: '.1f'
-          },
-          xaxis: {
-            showticklabels: false
-          },
-          annotations: [{
-            x: 20,
-            y: 10,
-            text: `#1 ${topRankers[0]}<br>#2 ${topRankers[1]}<br>#3 ${topRankers[2]}`,
-            bordercolor: "#112211",
-            align: 'left',
-            showarrow: false
-          }]
-        }
-        
-        Plotly.newPlot('horibar', data, layout, {displayModeBar: false});
-      }
-
-      // builds horizontal bar chart of selected country
-      const rebuildSelColumn = (rows, selectedCountry = undefined, selectedColumn) => {
-        if (!selectedCountry) {
-          console.log('no country selected')
-          buildSelColumn(rows, selectedColumn);
-          return
-        }
-
-        var data = [{
-          type: 'bar',
-          x: unpack(rows, 'location'),
-          y: unpack(rows, selectedColumn),
-          // orientation: 'h',
-          transforms: [{
-            type: 'sort',
-            target: 'y',
-            order: 'descending',
-          }],
-          marker: {},
-        }];
-
-        // const value = score.find(row => row.location === selectedCountry)['score'];
-        const topRankers = rows.slice().sort((a, b) => (a[selectedColumn] < b[selectedColumn]) ? 1 : -1).map(c => c.location).slice(0, 3)
-
-        var layout = {
-          title: selectedColumn,
-          yaxis: {
-            showticklabels: false,
-            hoverformat: '.1f'
-          },
-          xaxis: {
-            showticklabels: false
-          },
-          annotations: [{
-            x: 20,
-            y: 10,
-            text: `#1 ${topRankers[0]}<br>#2 ${topRankers[1]}<br>#3 ${topRankers[2]}`,
-            bordercolor: "#112211",
-            align: 'left',
-            showarrow: false
-          }]
-        }
-
-        // find country to highlight
-        data[0].marker.color = data[0].x.map(c => c === selectedCountry ? '#8D5A97' : '#56D2E6')
-
-
-        // const value = score.find(row => row.location === selectedCountry)['score'];
-        const ranking = rows.slice().sort((a, b) => (a[selectedColumn] < b[selectedColumn]) ? 1 : -1).map(c => c.location).indexOf(selectedCountry) + 1
-
-        // add annotation
-        layout.annotations.push(
-          {
-            x: selectedCountry,
-            y: getRowOfCountry(rows, selectedCountry, false)[selectedColumn],
-            text: selectedCountry + ` (#${ranking})`,
-            align: 'left',
-            bgcolor: "#FEFEFE",
-            bordercolor: "#112211",
-            showarrow: true,
-            ax: 15,
-            ay: -40,
           }
-        )
+        },
+      ];
 
-        Plotly.newPlot('horibar', data, layout, {displayModeBar: false});
-      }
+      let layout = {
+        paper_bgcolor: "#FFFFFF96",
+        title: 'Average',
+        polar: {
+          radialaxis: {
+            visible: true,
+            showticklabels: false,
+            range: [0, 10],
+          },
+        },
+        showlegend: false
+      };
 
+      Plotly.newPlot("radar", data, layout, {displayModeBar: false});
+    }
     
-      // builds initial radar plot before selectedcountry is defined
-      const buildRadarPlot = (rows) => {
-        // do something to draw initial radar plot
-        let data = [
+    // builds radar plot of selected country
+    const rebuildRadarPlot = (rows, selectedCountry) => {
+      if (!selectedCountry) {
+        buildRadarPlot(rows);
+        return
+      }
+      let countryRow = getRowOfCountry(rows, selectedCountry);
+
+      let data = [
           {
             type: "scatterpolar",
             r: [5.3, 5.5, 5.0, 5.2, 5.8, 5.6, 5.6, 5.3],  // hardcoded average values
             theta: [...rows.columns.slice(2), rows.columns[2]],
             fill: "toself",
             name: "Average",
-            hovertemplate: '%{theta}: %{r:.1f}',
+            hovertemplate: '%{theta}: %{r:.1f}',            
             marker: {
               color: '#56D2E6'
+            }
+          },
+          {
+            type: "scatterpolar",
+            r: [...countryRow, countryRow[0]],
+            theta: [...rows.columns.slice(2), rows.columns[2]],
+            fill: "toself",
+            name: selectedCountry,
+            hovertemplate: '%{theta}: %{r:.1f}',
+            marker: {
+              color: '#8D5A97'
             }
           },
         ];
 
         let layout = {
           paper_bgcolor: "#FFFFFF96",
-          title: 'Average',
+          title: selectedCountry + " vs Average",
           polar: {
             radialaxis: {
               visible: true,
@@ -504,147 +592,111 @@
               range: [0, 10],
             },
           },
-          showlegend: false
+          showlegend: false,
         };
 
         Plotly.newPlot("radar", data, layout, {displayModeBar: false});
-      }
-      
-      // builds radar plot of selected country
-      const rebuildRadarPlot = (rows, selectedCountry) => {
-        if (!selectedCountry) {
-          buildRadarPlot(rows);
-          return
-        }
-        let countryRow = getRowOfCountry(rows, selectedCountry);
-
-        let data = [
-            {
-              type: "scatterpolar",
-              r: [5.3, 5.5, 5.0, 5.2, 5.8, 5.6, 5.6, 5.3],  // hardcoded average values
-              theta: [...rows.columns.slice(2), rows.columns[2]],
-              fill: "toself",
-              name: "Average",
-              hovertemplate: '%{theta}',            
-              marker: {
-                color: '#56D2E6'
-              }
-            },
-            {
-              type: "scatterpolar",
-              r: [...countryRow, countryRow[0]],
-              theta: [...rows.columns.slice(2), rows.columns[2]],
-              fill: "toself",
-              name: selectedCountry,
-              hovertemplate: '%{theta}: %{r:.1f}',
-              marker: {
-                color: '#8D5A97'
-              }
-            },
-          ];
-
-          let layout = {
-            paper_bgcolor: "#FFFFFF96",
-            title: selectedCountry + " vs Average",
-            polar: {
-              radialaxis: {
-                visible: true,
-                showticklabels: false,
-                range: [0, 10],
-              },
-            },
-            showlegend: false,
-          };
-
-          Plotly.newPlot("radar", data, layout, {displayModeBar: false});
-      }
+    }
 
 
 
 
-      // ----- MAIN ----- //
-      
-      // get data
-      d3.csv("clean_data.csv", function (err, rows) {
-        // parse numericals (in-place)
-        parseNums(rows)
+    // ----- MAIN ----- //
+    
+    // get data
+    d3.csv("clean_data.csv", function (err, rows) {
+      // parse numericals (in-place)
+      parseNums(rows)
 
 
-        // calculate final score
-        const totalScore = []
-        rows.forEach(row => {
-          totalScore.push(
-            {
-              'location': row.location,
-              'score': Object.values(row).reduce((partialSum, a) => partialSum + (+a || 0), 0)
-            }
-          )
-        })
-
-        let selectedCountry = undefined
-        let selectedColumn = 'Quality of Life'
-
-        // build graphs
-        const choropleth = buildChoropleth(rows);
-        buildRankingChart(rows, totalScore);
-        buildRadarPlot(rows);
-        buildSelColumn(rows, selectedColumn);
-
-        
-        // after choropleth is built, 
-        // add reactivity
-        choropleth.then(gd => {
-          // move choropleth elements into view
-          document.getElementsByClassName('menulayer')[0].setAttribute('transform', 'translate(-104, 610)');
-          document.getElementsByClassName('g-gtitle')[0].setAttribute('transform', 'translate(0, 35)');
-
-          const resetBtn = document.getElementById('reset-btn')
-          resetBtn.onclick = () => {
-              selectedCountry = undefined;
-              rebuildRankingChart(rows, totalScore, selectedCountry);
-              rebuildRadarPlot(rows, selectedCountry);
-              rebuildSelColumn(rows, selectedCountry, selectedColumn);
-              resetBtn.disabled = true;
-              resetBtn.style.display = 'none';
+      // calculate final score
+      const totalScore = []
+      rows.forEach(row => {
+        totalScore.push(
+          {
+            'location': row.location,
+            'score': Object.values(row).reduce((partialSum, a) => partialSum + (+a || 0), 0)
           }
-           
-          return gd
-        }).then(gd => {
-          gd.on("plotly_click", loc => {
-            selectedCountry = (loc.points ?? [])[0]?.location;
+        )
+      })
 
-            const resetBtn = document.getElementById('reset-btn')
-            resetBtn.disabled = false;
-            resetBtn.style.display = 'block';
+      let selectedCountry = undefined
+      let selectedColumn = 'Quality of Life'
 
+      // build graphs
+      const choropleth = buildChoropleth(rows);
+      buildRankingChart(rows, totalScore);
+      buildRadarPlot(rows);
+      buildSelColumn(rows, selectedColumn);
+
+      
+      // after choropleth is built, 
+      // add reactivity
+      choropleth.then(gd => {
+        // modify the view
+
+        // fixes div width
+        const documentWidth = +getComputedStyle(document.documentElement).getPropertyValue('--width').slice(0,-2);
+        const documentHeight = documentWidth / 16 * 9;
+
+        document.getElementById("choropleth").firstChild.firstChild.style.maxWidth = `${documentWidth * 0.7}px`
+
+
+        // move menu buttons into view
+        document.getElementsByClassName('menulayer')[0]
+          .setAttribute('transform', `translate(${-documentWidth * 0.07}, ${documentHeight * 1.05})`);
+
+        // move title into view
+        document.getElementsByClassName('g-gtitle')[0]
+          .setAttribute('transform', `translate(0, ${documentHeight / 10})`);
+
+        const resetBtn = document.getElementById('reset-btn')
+        resetBtn.onclick = () => {
+            selectedCountry = undefined;
             rebuildRankingChart(rows, totalScore, selectedCountry);
             rebuildRadarPlot(rows, selectedCountry);
             rebuildSelColumn(rows, selectedCountry, selectedColumn);
-          })
+            resetBtn.disabled = true;
+            resetBtn.style.display = 'none';
+        }
+          
+        return gd
+      }).then(gd => {
+        gd.on("plotly_click", loc => {
+          selectedCountry = (loc.points ?? [])[0]?.location;
+
+
+          const resetBtn = document.getElementById('reset-btn')
+          resetBtn.disabled = false;
+          resetBtn.style.display = 'block';
+
+          rebuildRankingChart(rows, totalScore, selectedCountry);
+          rebuildRadarPlot(rows, selectedCountry);
+          rebuildSelColumn(rows, selectedCountry, selectedColumn);
         })
-        
+      })
 
 
-        // add reactivity to menu buttons
-        var updateButtons = [...document.getElementsByClassName("updatemenu-button")]
-        const order = [
-          "Quality of Life",
-          "Healthcare",
-          "Cost of Living",
-          "Safety",
-          "GDP",
-          "Life Expectancy",
-        ];
+      // add reactivity to menu buttons
+      var updateButtons = [...document.getElementsByClassName("updatemenu-button")]
+      const order = [
+        "Quality of Life",
+        "Healthcare",
+        "Cost of Living",
+        "Safety",
+        "GDP",
+        "Life Expectancy",
+      ];
 
-        updateButtons.forEach((button, index) => {
-          button.onclick = () => {
-            selectedColumn = order[index];
-            rebuildSelColumn(rows, selectedCountry, selectedColumn)
-          }
-        }); 
+      updateButtons.forEach((button, index) => {
+        button.onclick = () => {
+          selectedColumn = order[index];
+          rebuildSelColumn(rows, selectedCountry, selectedColumn)
+        }
+      }); 
 
 
-      });
-    </script>
+    });
+  </script>
 </body>
 </html>
